@@ -15,6 +15,7 @@ public class UnitController : MonoBehaviour
     private float _targetDistance;
     private Transform _targetTransform;
     private bool isSelected;
+    private bool isMoving;
     public void Initialize()
     {
         _navMeshAgent.updateRotation = false;
@@ -36,7 +37,10 @@ public class UnitController : MonoBehaviour
     public float TargetDistance
     {
         get => _targetDistance;
-        set { _targetDistance = value; }
+        set
+        {
+            _targetDistance = value;
+        }
     }
 
     public bool IsSelected
@@ -56,10 +60,11 @@ public class UnitController : MonoBehaviour
         float distance = Vector3.Distance(transform.position, _targetTransform.position);
         if (distance <= TargetDistance)
             
-            _navMeshAgent.speed = Mathf.FloorToInt(_navMeshAgent.speed * .4f);
+            _navMeshAgent.speed = Mathf.FloorToInt(_navMeshAgent.speed * .25f);
         
         if (distance <= _navMeshAgent.stoppingDistance)
         {
+            _unitVisual.PlayAnimation("Breathing Idle");
             SetDefault();
         }
     }
@@ -68,9 +73,12 @@ public class UnitController : MonoBehaviour
     {
         if (_targetTransform != null)
         {
-            _unitVisual.PlayAnimation("Walking");
             _navMeshAgent.SetDestination(_targetTransform.position);
-            
+            if (!isMoving)
+            {
+                Movement();
+                isMoving = true;
+            }
             CheckTargetDistance();
         }
         else
@@ -91,6 +99,7 @@ public class UnitController : MonoBehaviour
 
     public void SetDefault()
     {
+        isMoving = false;
         _unitVisual.HideText();
         _navMeshAgent.speed = currentSpeed;
         _rigidbody.velocity = Vector3.zero;
@@ -110,5 +119,18 @@ public class UnitController : MonoBehaviour
     public void ShowUnitCountText(int child, int adult, int old)
     {
         _unitVisual.ShowText(child,adult,old);
+    }
+
+    private void Movement()
+    {
+        if (_navMeshAgent.speed >= 5)
+        {
+            _unitVisual.PlayAnimation("Running");
+        }
+        else
+        {
+            _unitVisual.PlayAnimation("Walking");
+        }
+            
     }
 }

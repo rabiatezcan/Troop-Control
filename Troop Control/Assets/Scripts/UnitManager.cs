@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
 public class UnitManager : ControllerBase
 {
     [SerializeField] private InputHandler _inputHandler;
-    private List<UnitController> _units;
-    private List<UnitController> _selectedUnits;
+    public List<UnitController> _units;
+    public List<UnitController> _selectedUnits;
 
     public override void Initialize()
     {
@@ -82,11 +83,12 @@ public class UnitManager : ControllerBase
         _selectedUnits.Clear();
     }
 
-    public void SelectAll()
+    public void SelectAll(int speed)
     {
-        _selectedUnits = _units;
+        _selectedUnits = _units.ToList();
         foreach (var unit in _selectedUnits)
         {
+            unit.SetSpeed(speed);
             unit.IsSelected = true;
         }
     }

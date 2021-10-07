@@ -35,6 +35,6 @@ public class GameManager : MonoBehaviour
         if (select == 0)
             _unitManager.SetDefault();
         if(select == 1)
-            _unitManager.SelectAll();
+            _unitManager.SelectAll(_uiController.Speed);
     }
 }
